@@ -73,14 +73,25 @@ function SelectInput<V>({
 	onSelect,
 	onHighlight
 }: Props<V>): JSX.Element {
-	const [rotateIndex, setRotateIndex] = useState(0);
-	const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+	const [rotateIndex, setRotateIndex] = useState(
+		customLimit && initialIndex
+			? customLimit - initialIndex - 1 > 0
+				? 0
+				: customLimit - initialIndex - 1
+			: 0
+	);
+	const [selectedIndex, setSelectedIndex] = useState(
+		customLimit
+			? initialIndex > customLimit
+				? customLimit - 1
+				: initialIndex
+			: 0
+	);
 	const hasLimit =
 		typeof customLimit === 'number' && items.length > customLimit;
 	const limit = hasLimit ? Math.min(customLimit!, items.length) : items.length;
 
 	const previousItems = useRef<Array<Item<V>>>(items);
-
 	useEffect(() => {
 		if (
 			!isEqual(
@@ -164,12 +175,10 @@ function SelectInput<V>({
 	const slicedItems = hasLimit
 		? arrayRotate(items, rotateIndex).slice(0, limit)
 		: items;
-
 	return (
 		<Box flexDirection="column">
 			{slicedItems.map((item, index) => {
 				const isSelected = index === selectedIndex;
-
 				return (
 					<Box key={item.key ?? item.value}>
 						{React.createElement(indicatorComponent, {isSelected})}
