@@ -173,12 +173,6 @@ function SelectInput<V>({
 	const slicedItems = hasLimit
 		? arrayRotate(items, rotateIndex).slice(0, limit)
 		: items;
-	console.log(
-		'customLimit, initialIndex',
-		customLimit,
-		initialIndex,
-		rotateIndex
-	);
 	return (
 		<Box flexDirection="column">
 			{slicedItems.map((item, index) => {
