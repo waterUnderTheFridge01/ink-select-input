@@ -73,11 +73,20 @@ function SelectInput<V>({
 	onSelect,
 	onHighlight
 }: Props<V>): JSX.Element {
-	const [rotateIndex, setRotateIndex] = useState(0);
-	const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 	const hasLimit =
 		typeof customLimit === 'number' && items.length > customLimit;
 	const limit = hasLimit ? Math.min(customLimit!, items.length) : items.length;
+	const lastIndex = limit -1
+	const [rotateIndex, setRotateIndex] = useState(
+		hasLimit && initialIndex
+			? lastIndex - initialIndex > 0
+				? 0
+				: lastIndex - initialIndex
+			: 0
+	);
+	const [selectedIndex, setSelectedIndex] = useState(
+		initialIndex ? (initialIndex > lastIndex ? lastIndex : initialIndex) : 0
+	);
 
 	const previousItems = useRef<Array<Item<V>>>(items);
 
@@ -164,7 +173,12 @@ function SelectInput<V>({
 	const slicedItems = hasLimit
 		? arrayRotate(items, rotateIndex).slice(0, limit)
 		: items;
-
+	console.log(
+		'customLimit, initialIndex',
+		customLimit,
+		initialIndex,
+		rotateIndex
+	);
 	return (
 		<Box flexDirection="column">
 			{slicedItems.map((item, index) => {
