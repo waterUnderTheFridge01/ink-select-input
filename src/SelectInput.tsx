@@ -73,8 +73,20 @@ function SelectInput<V>({
 	onSelect,
 	onHighlight
 }: Props<V>): JSX.Element {
-	const [rotateIndex, setRotateIndex] = useState(0);
-	const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+	const [rotateIndex, setRotateIndex] = useState(
+		customLimit && initialIndex
+			? customLimit - initialIndex - 1 > 0
+				? 0
+				: customLimit - initialIndex - 1
+			: 0
+	);
+	const [selectedIndex, setSelectedIndex] = useState(
+		customLimit
+			? initialIndex > customLimit
+				? customLimit - 1
+				: initialIndex
+			: 0
+	);
 	const hasLimit =
 		typeof customLimit === 'number' && items.length > customLimit;
 	const limit = hasLimit ? Math.min(customLimit!, items.length) : items.length;
